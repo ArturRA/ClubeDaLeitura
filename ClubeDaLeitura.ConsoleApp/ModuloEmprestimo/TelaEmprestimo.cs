@@ -1,12 +1,15 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
 using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {
-    internal class TelaEmprestimo
+    public class TelaEmprestimo : Tela
     {
-        public static string ApresentarMenuCadastroEmprestimo()
+        RepositorioEmprestimo repositorioEmprestimo = new RepositorioEmprestimo();
+
+        public string ApresentarMenuCadastroEmprestimo()
         {
             Console.Clear();
 
@@ -26,42 +29,41 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             return opcao;
         }
 
-        public static void InserirNovoEmprestimo()
+        public void InserirNovoEmprestimo(TelaAmigo telaAmigo, TelaRevista telaRevista)
         {
-
             Console.WriteLine("Cadastro de Emprestimo\n"
                             + "Inserindo novo Emprestimo:\n");
 
-            if (RepositorioRevista.EstaVazio())
+            if (telaRevista.SelecionarTodaALista().EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
 
-            if (RepositorioAmigo.EstaVazio())
+            if (telaAmigo.SelecionarTodaALista().EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
 
-            Emprestimo novoEmprestimo = ObterInformacaoEmprestimoUsuario();
+            Emprestimo novoEmprestimo = ObterInformacaoEmprestimoUsuario(telaAmigo, telaRevista);
 
-            RepositorioEmprestimo.Inserir(novoEmprestimo);
+            repositorioEmprestimo.Inserir(novoEmprestimo);
 
-            Program.ApresentarMensagemColorida("Emprestimo inserida com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Emprestimo inserida com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void FazerDevolucao()
+        public void FazerDevolucao()
         {
             Console.WriteLine("Cadastro de Emprestimo\n"
                             + "Fazer Devolução:\n");
 
-            if (RepositorioEmprestimo.EstaVazio())
+            if (repositorioEmprestimo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma Emprestimo cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma Emprestimo cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -69,20 +71,20 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             ListarEmprestimos();
 
             Emprestimo emprestimoParaEditar = EncontrarEmprestimoNaLista();
-            RepositorioEmprestimo.EditarStatus(emprestimoParaEditar);
+            repositorioEmprestimo.EditarStatus(emprestimoParaEditar);
 
-            Program.ApresentarMensagemColorida("Revista devolvida com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Revista devolvida com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void VisualizarEmprestimos()
+        public void VisualizarEmprestimos()
         {
             Console.WriteLine("Cadastro de Emprestimo\n"
                             + "Visualizando Emprestimos:\n");
 
-            if (RepositorioEmprestimo.EstaVazio())
+            if (repositorioEmprestimo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum Emprestimo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum Emprestimo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -91,28 +93,28 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             Console.ReadLine();
         }
 
-        public static void VisualizarEmprestimosDeUmPeriodo(string tipo)
+        public void VisualizarEmprestimosDeUmPeriodo(string tipo)
         {
             Console.WriteLine("Cadastro de Emprestimo\n"
                             + "Visualizando Emprestimos:\n");
 
-            if (RepositorioEmprestimo.EstaVazio())
+            if (repositorioEmprestimo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum Emprestimo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum Emprestimo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
 
             ListarEmprestimos();
 
-            ArrayList listaDeEmprestimos = RepositorioEmprestimo.SelecionarTodaALista();
+            ArrayList listaDeEmprestimos = repositorioEmprestimo.SelecionarTodaALista();
 
             Console.Write($"Digite o {tipo} que deseja verificar: ");
             string dataVerificar = Console.ReadLine();
 
-            if (!RepositorioEmprestimo.ExisteEmprestimosNaData(tipo, dataVerificar))
+            if (!repositorioEmprestimo.ExisteEmprestimosNaData(tipo, dataVerificar))
             {
-                Program.ApresentarMensagemColorida("Nenhum Emprestimo cadastrado na data informada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum Emprestimo cadastrado na data informada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -137,7 +139,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
         }
 
         #region funções privadas
-        private static Emprestimo EncontrarEmprestimoNaLista()
+        private Emprestimo EncontrarEmprestimoNaLista()
         {
             Emprestimo EmprestimoSelecionada = null;
             int idSelecionado;
@@ -147,10 +149,10 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 
                 idSelecionado = Convert.ToInt32(Console.ReadLine());
 
-                EmprestimoSelecionada = RepositorioEmprestimo.SelecionarEmprestimoPeloId(idSelecionado);
+                EmprestimoSelecionada = repositorioEmprestimo.SelecionarEmprestimoPeloId(idSelecionado);
 
                 if (EmprestimoSelecionada == null)
-                    Program.ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
+                    ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
                 else
                     break;
             }
@@ -158,11 +160,11 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             return EmprestimoSelecionada;
         }
 
-        private static void ListarEmprestimos()
+        private void ListarEmprestimos()
         {
-            ArrayList listaDeEmprestimos = RepositorioEmprestimo.SelecionarTodaALista();
+            ArrayList listaDeEmprestimos = repositorioEmprestimo.SelecionarTodaALista();
 
-            Program.ApresentarMensagemColorida($"{"Id",-5}  |   {"Amigo",-10}  |   {"Revista Id",-10}  |   "
+            ApresentarMensagemColorida($"{"Id",-5}  |   {"Amigo",-10}  |   {"Revista Id",-10}  |   "
                                              + $"{"Revista coleção",-15}  |   {"Data Emprestimo",-15}  |   {"Data Devolução",-15}  |   {"Status",-5}\n"
                                              + $"".PadRight(110, '-'), ConsoleColor.Red);
 
@@ -178,15 +180,15 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             Console.ResetColor();
         }
 
-        private static Emprestimo ObterInformacaoEmprestimoUsuario()
+        private Emprestimo ObterInformacaoEmprestimoUsuario(TelaAmigo telaAmigo, TelaRevista telaRevista)
         {
             Emprestimo emprestimo = new Emprestimo();
 
-            TelaAmigo.ListarAmigos();
-            emprestimo.amigo = TelaAmigo.EncontrarAmigoNaLista();
+            telaAmigo.ListarAmigos();
+            emprestimo.amigo = telaAmigo.EncontrarAmigoNaLista();
 
-            TelaRevista.ListarRevistas();
-            emprestimo.revista = TelaRevista.EncontrarRevistaNaLista();
+            telaRevista.ListarRevistas();
+            emprestimo.revista = telaRevista.EncontrarRevistaNaLista();
 
             emprestimo.dataEmprestimo = DateTime.Now;
 

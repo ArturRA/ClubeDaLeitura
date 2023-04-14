@@ -1,35 +1,21 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
 using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {
-    internal class RepositorioEmprestimo
+    internal class RepositorioEmprestimo : Repositorio
     {
-        private static int id = 1;
-
-        private static ArrayList listaEmprestimos = new ArrayList();
-
-        public static void Inserir(Emprestimo emprestimo)
-        {
-            emprestimo.id = id;
-            listaEmprestimos.Add(emprestimo);
-            id++;
-        }
-        public static void EditarStatus(Emprestimo emprestimoParaEditar)
+        public void EditarStatus(Emprestimo emprestimoParaEditar)
         {
             emprestimoParaEditar.pendente = false;
         }
 
-        public static ArrayList SelecionarTodaALista()
-        {
-            return listaEmprestimos;
-        }
-
-        public static Emprestimo SelecionarEmprestimoPeloId(int id)
+        public Emprestimo SelecionarEmprestimoPeloId(int id)
         {
             Emprestimo emprestimo = null;
 
-            foreach (Emprestimo e in listaEmprestimos)
+            foreach (Emprestimo e in listaRegistros)
             {
                 if (e.id == id)
                 {
@@ -41,20 +27,12 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             return emprestimo;
         }
 
-        public static bool EstaVazio()
-        {
-            if (listaEmprestimos.Count == 0)
-                return true;
-            else
-                return false;
-        }
-
-        public static bool ExisteEmprestimosNaData(string tipoDeData, string dataVerificar)
+        public bool ExisteEmprestimosNaData(string tipoDeData, string dataVerificar)
         {
             bool existeEmprestimosNaData = false;
 
             // Verifica se existe pelo menos um emprestimo realizado na data informada
-            foreach (Emprestimo e in listaEmprestimos)
+            foreach (Emprestimo e in listaRegistros)
             {
                 if (String.Equals(e.dataEmprestimo.ToString(tipoDeData), dataVerificar))
                 {

@@ -1,11 +1,15 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloCaixa;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloCaixa;
+using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
 using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
 {
-    internal class TelaRevista
+    public class TelaRevista : Tela
     {
-        public static string ApresentarMenuCadastroRevista()
+        private RepositorioRevista repositorioRevista = new RepositorioRevista();
+
+        public string ApresentarMenuCadastroRevista()
         {
             Console.Clear();
 
@@ -24,35 +28,35 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             return opcao;
         }
 
-        public static void InserirNovoRevista()
+        public void InserirNovoRevista(TelaCaixa telaCaixa)
         {
 
             Console.WriteLine("Cadastro de Revista\n"
                             + "Inserindo nova Revista:\n");
 
-            if (RepositorioCaixa.EstaVazio())
+            if (telaCaixa.SelecionarTodaALista().EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
 
-            Revista novaRevista =   ObterInformacaoRevistaUsuario();
+            Revista novaRevista =   ObterInformacaoRevistaUsuario(telaCaixa);
 
-            RepositorioRevista.Inserir(novaRevista);
+            repositorioRevista.Inserir(novaRevista);
 
-            Program.ApresentarMensagemColorida("Revista inserida com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Revista inserida com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void VisualizarRevistas()
+        public void VisualizarRevistas()
         {
             Console.WriteLine("Cadastro de Revista\n"
                             + "Visualizando Revistas:\n");
 
-            if (RepositorioRevista.EstaVazio())
+            if (repositorioRevista.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -61,14 +65,14 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             Console.ReadLine();
         }
 
-        public static void EditarRevista()
+        public void EditarRevista(TelaCaixa telaCaixa)
         {
             Console.WriteLine("Cadastro de Revista\n"
                             + "Editando Revista:\n");
 
-            if (RepositorioRevista.EstaVazio())
+            if (repositorioRevista.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -76,21 +80,21 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             ListarRevistas();
 
             Revista revistaParaEditar = EncontrarRevistaNaLista();
-            Revista revistaAtualizada = ObterInformacaoRevistaUsuario();
-            RepositorioRevista.Editar(revistaParaEditar, revistaAtualizada);
+            Revista revistaAtualizada = ObterInformacaoRevistaUsuario(telaCaixa);
+            repositorioRevista.Editar(revistaParaEditar, revistaAtualizada);
 
-            Program.ApresentarMensagemColorida("Revista editada com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Revista editada com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void ExcluirRevista()
+        public void ExcluirRevista()
         {
             Console.WriteLine("Cadastro de Revista\n"
                             + "Excluir Revista:\n");
 
-            if (RepositorioRevista.EstaVazio())
+            if (repositorioRevista.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -98,16 +102,16 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             ListarRevistas();
 
             Revista revistaParaExcluir = EncontrarRevistaNaLista();
-            RepositorioRevista.Excluir(revistaParaExcluir);
+            repositorioRevista.Excluir(revistaParaExcluir);
 
-            Program.ApresentarMensagemColorida("Revista excluído com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Revista excluído com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
 
 
         #region funções privadas
-        public static Revista EncontrarRevistaNaLista()
+        public Revista EncontrarRevistaNaLista()
         {
             Revista revistaSelecionada = null;
             int idSelecionado;
@@ -117,10 +121,10 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
 
                 idSelecionado = Convert.ToInt32(Console.ReadLine());
 
-                revistaSelecionada = RepositorioRevista.SelecionarRevistaPeloId(idSelecionado);
+                revistaSelecionada = repositorioRevista.SelecionarRevistaPeloId(idSelecionado);
 
                 if (revistaSelecionada == null)
-                    Program.ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
+                    ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
                 else
                     break;
             }
@@ -128,11 +132,11 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             return revistaSelecionada;
         }
 
-        public static void ListarRevistas()
+        public void ListarRevistas()
         {
-            ArrayList listaDeRevistas = RepositorioRevista.SelecionarTodaALista();
+            ArrayList listaDeRevistas = repositorioRevista.SelecionarTodaALista();
 
-            Program.ApresentarMensagemColorida($"{"Id",-5}  |   {"Coleção",-10}  |   {"Numero edição",-15}  |   "
+            ApresentarMensagemColorida($"{"Id",-5}  |   {"Coleção",-10}  |   {"Numero edição",-15}  |   "
                                              + $"{"Ano da Revista",-15}  |   {"Id da Caixa",-15}  |   {"Etiqueta da Caixa",-10}\n"
                                               + "".PadRight(100, '-'), ConsoleColor.Red);
 
@@ -147,13 +151,18 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             Console.ResetColor();
         }
 
-        private static Revista ObterInformacaoRevistaUsuario()
+        public RepositorioRevista SelecionarTodaALista()
+        {
+            return repositorioRevista;
+        }
+
+        private Revista ObterInformacaoRevistaUsuario(TelaCaixa telaCaixa)
         {
             Revista revista = new Revista();
 
-            TelaCaixa.ListarCaixas();
+            telaCaixa.ListarCaixas();
 
-            revista.caixa = TelaCaixa.EncontrarCaixaNaLista();
+            revista.caixa = telaCaixa.EncontrarCaixaNaLista();
 
             Console.Write("Digite o nome da Coleção: ");
             revista.colecao = Console.ReadLine();

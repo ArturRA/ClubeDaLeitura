@@ -9,6 +9,11 @@ namespace ClubeDaLeitura.ConsoleApp
     {
         static void Main(string[] args)
         {
+            TelaAmigo telaAmigo = new TelaAmigo();
+            TelaCaixa telaCaixa = new TelaCaixa();
+            TelaEmprestimo telaEmprestimo = new TelaEmprestimo();
+            TelaRevista telaRevista = new TelaRevista();
+
             while (true)
             {
                 string opcao = ApresentarMenuPrincipal();
@@ -19,73 +24,73 @@ namespace ClubeDaLeitura.ConsoleApp
                 switch (opcao)
                 {
                     case "1":
-                        string opcaoCadastroAmigo = TelaAmigo.ApresentarMenuCadastroAmigo();
+                        string opcaoCadastroAmigo = telaAmigo.ApresentarMenuCadastroAmigo();
 
                         switch (opcaoCadastroAmigo)
                         {
                             case "1":
-                                TelaAmigo.InserirNovoAmigo();
+                                telaAmigo.InserirNovoAmigo();
                                 break;
                             case "2":
-                                TelaAmigo.VisualizarAmigos();
+                                telaAmigo.VisualizarAmigos();
                                 break;
                             case "3":
-                                TelaAmigo.EditarAmigo();
+                                telaAmigo.EditarAmigo();
                                 break;
                             case "4":
-                                TelaAmigo.ExcluirCaixa();
+                                telaAmigo.ExcluirCaixa();
                                 break;
                             default:
                                 break;
                         }
                         break;
                     case "2":
-                        string opcaoCadastroCaixa = TelaCaixa.ApresentarMenuCadastroCaixa();
+                        string opcaoCadastroCaixa = telaCaixa.ApresentarMenuCadastroCaixa();
 
                         switch (opcaoCadastroCaixa)
                         {
                             case "1":
-                                TelaCaixa.InserirNovoAmigo();
+                                telaCaixa.InserirNovoAmigo();
                                 break;
                             case "2":
-                                TelaCaixa.VisualizarCaixas();
+                                telaCaixa.VisualizarCaixas();
                                 break;
                             case "3":
-                                TelaCaixa.EditarCaixa();
+                                telaCaixa.EditarCaixa();
                                 break;
                             case "4":
-                                TelaCaixa.ExcluirCaixa();
+                                telaCaixa.ExcluirCaixa();
                                 break;
                             default:
                                 break;
                         }
                         break;
                     case "3":
-                        string opcaoCadastroEmprestimo = TelaEmprestimo.ApresentarMenuCadastroEmprestimo();
+                        string opcaoCadastroEmprestimo = telaEmprestimo.ApresentarMenuCadastroEmprestimo();
 
                         switch (opcaoCadastroEmprestimo)
                         {
                             case "1":
-                                TelaEmprestimo.InserirNovoEmprestimo();
+                                telaEmprestimo.InserirNovoEmprestimo(telaAmigo, telaRevista);
                                 break;
                             case "2":
-                                TelaEmprestimo.FazerDevolucao();
+                                telaEmprestimo.FazerDevolucao();
                                 break;
                             case "3":
-                                TelaEmprestimo.VisualizarEmprestimos();
+                                telaEmprestimo.VisualizarEmprestimos();
                                 break;
                             case "4":
-                                TelaEmprestimo.VisualizarEmprestimosDeUmPeriodo("MM/yyyy");
+                                telaEmprestimo.VisualizarEmprestimosDeUmPeriodo("MM/yyyy");
                                 break;
                             case "5":
-                                TelaEmprestimo.VisualizarEmprestimosDeUmPeriodo("dd/MM/yyyy");
+                                telaEmprestimo.VisualizarEmprestimosDeUmPeriodo("dd/MM/yyyy");
                                 break;
                             default:
                                 break;
                         }
                         break;
                     case "4":
-                        string opcaoCadastroRevista = TelaRevista.ApresentarMenuCadastroRevista();
+                        string opcaoCadastroRevista = telaRevista.ApresentarMenuCadastroRevista();
 
                         if (opcaoCadastroRevista == "s")
                             break;
@@ -93,16 +98,16 @@ namespace ClubeDaLeitura.ConsoleApp
                         switch (opcaoCadastroRevista)
                         {
                             case "1":
-                                TelaRevista.InserirNovoRevista();
+                                telaRevista.InserirNovoRevista(telaCaixa);
                                 break;
                             case "2":
-                                TelaRevista.VisualizarRevistas();
+                                telaRevista.VisualizarRevistas();
                                 break;
                             case "3":
-                                TelaRevista.EditarRevista();
+                                telaRevista.EditarRevista(telaCaixa);
                                 break;
                             case "4":
-                                TelaRevista.ExcluirRevista();
+                                telaRevista.ExcluirRevista();
                                 break;
                             default:
                                 break;
@@ -113,13 +118,6 @@ namespace ClubeDaLeitura.ConsoleApp
                         break;
                 }
             }
-        }
-
-        public static void ApresentarMensagemColorida(string mensagem, ConsoleColor cor)
-        {
-            Console.ForegroundColor = cor;
-            Console.WriteLine(mensagem);
-            Console.ResetColor();
         }
 
         private static string ApresentarMenuPrincipal()

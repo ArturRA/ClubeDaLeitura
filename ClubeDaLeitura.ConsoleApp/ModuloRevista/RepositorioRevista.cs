@@ -1,21 +1,12 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloRevista;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
 {
-    internal class RepositorioRevista
+    public class RepositorioRevista : Repositorio
     {
-        private static int id = 1;
-
-        private static ArrayList listaRevistas = new ArrayList();
-
-        public static void Inserir(Revista revista)
-        {
-            revista.id = id;
-            listaRevistas.Add(revista);
-            id++;
-        }
-        public static void Editar(Revista revistaParaEditar, Revista revistaAtualizada)
+        public void Editar(Revista revistaParaEditar, Revista revistaAtualizada)
         {
             revistaParaEditar.colecao = revistaAtualizada.colecao;
             revistaParaEditar.edicao = revistaAtualizada.edicao;
@@ -23,16 +14,11 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             revistaParaEditar.caixa = revistaAtualizada.caixa;
         }
 
-        public static ArrayList SelecionarTodaALista()
-        {
-            return listaRevistas;
-        }
-
-        public static Revista SelecionarRevistaPeloId(int id)
+        public Revista SelecionarRevistaPeloId(int id)
         {
             Revista revista = null;
 
-            foreach (Revista r in listaRevistas)
+            foreach (Revista r in listaRegistros)
             {
                 if (r.id == id)
                 {
@@ -44,17 +30,9 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             return revista;
         }
 
-        public static void Excluir(Revista revistaParaExcluir)
+        public void Excluir(Revista revistaParaExcluir)
         {
-            listaRevistas.Remove(revistaParaExcluir);
-        }
-
-        public static bool EstaVazio()
-        {
-            if (listaRevistas.Count == 0)
-                return true;
-            else
-                return false;
+            listaRegistros.Remove(revistaParaExcluir);
         }
     }
 }

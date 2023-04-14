@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloRevista;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography.X509Certificates;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
 {
-    internal class TelaCaixa
+    public class TelaCaixa : Tela
     {
-        public static string ApresentarMenuCadastroCaixa()
+        private RepositorioCaixa repositorioCaixa = new RepositorioCaixa();
+
+        public string ApresentarMenuCadastroCaixa()
         {
             Console.Clear();
 
@@ -26,7 +30,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
             return opcao;
         }
 
-        public static void InserirNovoAmigo()
+        public void InserirNovoAmigo()
         {
             
             Console.WriteLine("Cadastro de Caixa\n"
@@ -34,20 +38,20 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
 
             Caixa novaCaixa = ObterInformacaoCaixaUsuario();
 
-            RepositorioCaixa.Inserir(novaCaixa);
+            repositorioCaixa.Inserir(novaCaixa);
 
-            Program.ApresentarMensagemColorida("Caixa inserida com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Caixa inserida com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void VisualizarCaixas()
+        public void VisualizarCaixas()
         {
             Console.WriteLine("Cadastro de Caixa\n"
                             + "Visualizando Caixas:\n");
 
-            if (RepositorioCaixa.EstaVazio())
+            if (repositorioCaixa.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -56,14 +60,14 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
             Console.ReadLine();
         }
 
-        public static void EditarCaixa()
+        public void EditarCaixa()
         {
             Console.WriteLine("Cadastro de Caixa\n"
                             + "Editando Caixa:\n");
 
-            if (RepositorioCaixa.EstaVazio())
+            if (repositorioCaixa.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -72,20 +76,20 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
 
             Caixa caixaParaEditar = EncontrarCaixaNaLista();
             Caixa caixaAtualizada = ObterInformacaoCaixaUsuario();
-            RepositorioCaixa.Editar(caixaParaEditar, caixaAtualizada);
+            repositorioCaixa.Editar(caixaParaEditar, caixaAtualizada);
 
-            Program.ApresentarMensagemColorida("Caixa editada com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Caixa editada com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void ExcluirCaixa()
+        public void ExcluirCaixa()
         {
             Console.WriteLine("Cadastro de Caixa\n"
                             + "Excluir Caixa:\n");
 
-            if (RepositorioCaixa.EstaVazio())
+            if (repositorioCaixa.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhuma caixa cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -93,13 +97,13 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
             ListarCaixas();
 
             Caixa caixaParaExcluir = EncontrarCaixaNaLista();
-            RepositorioCaixa.Excluir(caixaParaExcluir);
+            repositorioCaixa.Excluir(caixaParaExcluir);
 
-            Program.ApresentarMensagemColorida("Caixa excluído com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Caixa excluído com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static Caixa EncontrarCaixaNaLista()
+        public Caixa EncontrarCaixaNaLista()
         {
             Caixa caixaSelecionada = null;
             int idSelecionado;
@@ -109,10 +113,10 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
 
                 idSelecionado = Convert.ToInt32(Console.ReadLine());
 
-                caixaSelecionada = RepositorioCaixa.SelecionarCaixaPeloId(idSelecionado);
+                caixaSelecionada = repositorioCaixa.SelecionarCaixaPeloId(idSelecionado);
 
                 if (caixaSelecionada == null)
-                    Program.ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
+                    ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
                 else
                     break;
             }
@@ -120,11 +124,11 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
             return caixaSelecionada;
         }
 
-        public static void ListarCaixas()
+        public void ListarCaixas()
         {
-            ArrayList listaDeCaixas = RepositorioCaixa.SelecionarTodaALista();
+            ArrayList listaDeCaixas = repositorioCaixa.SelecionarTodaALista();
 
-            Program.ApresentarMensagemColorida($"{"Id",-5}  |   {"Cor",-10}  |   {"Etiqueta",-15}\n"
+            ApresentarMensagemColorida($"{"Id",-5}  |   {"Cor",-10}  |   {"Etiqueta",-15}\n"
                                               + "".PadRight(40, '-'), ConsoleColor.Red);
 
 
@@ -137,8 +141,13 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
             Console.ResetColor();
         }
 
+        public RepositorioCaixa SelecionarTodaALista()
+        {
+            return repositorioCaixa;
+        }
+
         #region funções privadas
-        private static Caixa ObterInformacaoCaixaUsuario()
+        private Caixa ObterInformacaoCaixaUsuario()
         {
             Caixa caixa = new Caixa();
 

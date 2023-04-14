@@ -1,11 +1,15 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloCaixa;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloCaixa;
+using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
 {
-    internal class TelaAmigo
+    public class TelaAmigo : Tela
     {
-        public static string ApresentarMenuCadastroAmigo()
+        private RepositorioAmigo repositorioAmigo = new RepositorioAmigo();
+
+        public string ApresentarMenuCadastroAmigo()
         {
             Console.Clear();
 
@@ -24,7 +28,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             return opcao;
         }
 
-        public static void InserirNovoAmigo()
+        public void InserirNovoAmigo()
         {
 
             Console.WriteLine("Cadastro de Amigo\n"
@@ -32,20 +36,20 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
 
             Amigo novoAmigo = ObterInformacaoAmigoUsuario();
 
-            RepositorioAmigo.Inserir(novoAmigo);
+            repositorioAmigo.Inserir(novoAmigo);
 
-            Program.ApresentarMensagemColorida("Amigo inserido com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Amigo inserido com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void VisualizarAmigos()
+        public void VisualizarAmigos()
         {
             Console.WriteLine("Cadastro de Amigo\n"
                             + "Visualizando Amigos:\n");
 
-            if (RepositorioAmigo.EstaVazio())
+            if (repositorioAmigo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -54,14 +58,14 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             Console.ReadLine();
         }
 
-        public static void EditarAmigo()
+        public void EditarAmigo()
         {
             Console.WriteLine("Cadastro de Amigo\n"
                             + "Editando Amigo:\n");
 
-            if (RepositorioAmigo.EstaVazio())
+            if (repositorioAmigo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -70,20 +74,20 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
 
             Amigo amigoParaEditar = EncontrarAmigoNaLista();
             Amigo amigoAtualizada = ObterInformacaoAmigoUsuario();
-            RepositorioAmigo.Editar(amigoParaEditar, amigoAtualizada);
+            repositorioAmigo.Editar(amigoParaEditar, amigoAtualizada);
 
-            Program.ApresentarMensagemColorida("Amigo editado com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Amigo editado com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-        public static void ExcluirCaixa()
+        public void ExcluirCaixa()
         {
             Console.WriteLine("Cadastro de Amigo\n"
                             + "Excluir Amigo:\n");
 
-            if (RepositorioAmigo.EstaVazio())
+            if (repositorioAmigo.EstaVazio())
             {
-                Program.ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
+                ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -91,16 +95,13 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             ListarAmigos();
 
             Amigo amigoParaExcluir = EncontrarAmigoNaLista();
-            RepositorioAmigo.Excluir(amigoParaExcluir);
+            repositorioAmigo.Excluir(amigoParaExcluir);
 
-            Program.ApresentarMensagemColorida("Amigo excluído com sucesso!", ConsoleColor.Green);
+            ApresentarMensagemColorida("Amigo excluído com sucesso!", ConsoleColor.Green);
             Console.ReadLine();
         }
 
-
-
-        #region funções privadas
-        public static Amigo EncontrarAmigoNaLista()
+        public Amigo EncontrarAmigoNaLista()
         {
             Amigo amigoSelecionado = null;
             int idSelecionado;
@@ -110,10 +111,10 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
 
                 idSelecionado = Convert.ToInt32(Console.ReadLine());
 
-                amigoSelecionado = RepositorioAmigo.SelecionarAmigoPeloId(idSelecionado);
+                amigoSelecionado = repositorioAmigo.SelecionarAmigoPeloId(idSelecionado);
 
                 if (amigoSelecionado == null)
-                    Program.ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
+                    ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
                 else
                     break;
             }
@@ -121,11 +122,11 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             return amigoSelecionado;
         }
 
-        public static void ListarAmigos()
+        public void ListarAmigos()
         {
-            ArrayList listaDeAmigos = RepositorioAmigo.SelecionarTodaALista();
+            ArrayList listaDeAmigos = repositorioAmigo.SelecionarTodaALista();
 
-            Program.ApresentarMensagemColorida($"{"Id",-5}  |   {"Nome",-15}  |   {"Nome Responsavel",-20}  |   "
+            ApresentarMensagemColorida($"{"Id",-5}  |   {"Nome",-15}  |   {"Nome Responsavel",-20}  |   "
                                              + $"{"Telefone",-20}  |   {"Endereço",-20}\n"
                                               + "".PadRight(100, '-'), ConsoleColor.Red);
 
@@ -140,7 +141,13 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             Console.ResetColor();
         }
 
-        private static Amigo ObterInformacaoAmigoUsuario()
+        public RepositorioAmigo SelecionarTodaALista()
+        {
+            return repositorioAmigo;
+        }
+
+        #region funções privadas
+        private Amigo ObterInformacaoAmigoUsuario()
         {
             Amigo amigo = new Amigo();
 

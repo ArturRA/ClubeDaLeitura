@@ -1,11 +1,11 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
 using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {
-    public class Emprestimo
+    public class Emprestimo : Entidade
     {
-        public int id;
         public Amigo amigo;
         public Revista revista;
         public DateTime dataEmprestimo;
