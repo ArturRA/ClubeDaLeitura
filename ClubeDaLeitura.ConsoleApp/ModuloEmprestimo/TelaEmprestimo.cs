@@ -7,7 +7,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {
     public class TelaEmprestimo : Tela
     {
-        RepositorioEmprestimo repositorioEmprestimo = new RepositorioEmprestimo();
+        private RepositorioEmprestimo repositorioEmprestimo = new RepositorioEmprestimo();
 
         public string ApresentarMenuCadastroEmprestimo()
         {

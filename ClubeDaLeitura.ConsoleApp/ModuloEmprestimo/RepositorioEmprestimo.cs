@@ -1,6 +1,4 @@
 ﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
-using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
-using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {

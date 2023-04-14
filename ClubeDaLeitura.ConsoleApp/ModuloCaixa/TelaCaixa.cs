@@ -1,9 +1,5 @@
 ﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
-using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloCaixa
 {

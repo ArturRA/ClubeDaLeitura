@@ -1,13 +1,12 @@
-﻿using ClubeDaLeitura.ConsoleApp.ModuloRevista;
-using System.Collections;
+﻿using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.Compartilhado
 {
     public class Repositorio
     {
-        public int contadorDeId = 1;
+        private int contadorDeId = 1;
 
-        public ArrayList listaRegistros = new ArrayList();
+        protected ArrayList listaRegistros = new ArrayList();
 
         public void Inserir<T>(T entidade) where T : Entidade
         {
