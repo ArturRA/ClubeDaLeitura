@@ -150,7 +150,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloRevista
             Console.ResetColor();
         }
 
-        public RepositorioRevista SelecionarTodaALista()
+        public RepositorioRevista SelecionarRepositorio()
         {
             return repositorioRevista;
         }

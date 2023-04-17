@@ -34,16 +34,30 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             Console.WriteLine("Cadastro de Emprestimo\n"
                             + "Inserindo novo Emprestimo:\n");
 
-            if (telaRevista.SelecionarTodaALista().EstaVazio())
+            if (telaRevista.SelecionarRepositorio().EstaVazio())
             {
                 ApresentarMensagemColorida("Nenhuma Revista cadastrada!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
 
-            if (telaAmigo.SelecionarTodaALista().EstaVazio())
+            if (telaAmigo.SelecionarRepositorio().EstaVazio())
             {
                 ApresentarMensagemColorida("Nenhum amigo cadastrado!", ConsoleColor.DarkYellow);
+                Console.ReadLine();
+                return;
+            }
+
+            if (!repositorioEmprestimo.ExisteRevistaParaEmprestar(telaRevista))
+            {
+                ApresentarMensagemColorida("Nenhuma revista disponivel para fazer Emprestimo!", ConsoleColor.DarkYellow);
+                Console.ReadLine();
+                return;
+            }
+
+            if (!repositorioEmprestimo.ExisteAmigoParaEmprestar(telaAmigo))
+            {
+                ApresentarMensagemColorida("Nenhum amigo pode fazer Emprestimo!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -64,6 +78,13 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             if (repositorioEmprestimo.EstaVazio())
             {
                 ApresentarMensagemColorida("Nenhuma Emprestimo cadastrada!", ConsoleColor.DarkYellow);
+                Console.ReadLine();
+                return;
+            }
+
+            if (!repositorioEmprestimo.ExistePendencias())
+            {
+                ApresentarMensagemColorida("Nenhuma Emprestimo pendente!", ConsoleColor.DarkYellow);
                 Console.ReadLine();
                 return;
             }
@@ -141,7 +162,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
         #region funções privadas
         private Emprestimo EncontrarEmprestimoNaLista()
         {
-            Emprestimo EmprestimoSelecionada = null;
+            Emprestimo emprestimoSelecionada = null;
             int idSelecionado;
             while (true)
             {
@@ -149,15 +170,17 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 
                 idSelecionado = Convert.ToInt32(Console.ReadLine());
 
-                EmprestimoSelecionada = repositorioEmprestimo.SelecionarEmprestimoPeloId(idSelecionado);
+                emprestimoSelecionada = repositorioEmprestimo.SelecionarEmprestimoPeloId(idSelecionado);
 
-                if (EmprestimoSelecionada == null)
+                if (emprestimoSelecionada == null)
                     ApresentarMensagemColorida("Id inválido, tente novamente", ConsoleColor.Red);
+                else if (!emprestimoSelecionada.pendente)
+                    ApresentarMensagemColorida("Emprestimo já está quitado", ConsoleColor.Red);
                 else
                     break;
             }
 
-            return EmprestimoSelecionada;
+            return emprestimoSelecionada;
         }
 
         private void ListarEmprestimos()
@@ -185,10 +208,27 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
             Emprestimo emprestimo = new Emprestimo();
 
             telaAmigo.ListarAmigos();
-            emprestimo.amigo = telaAmigo.EncontrarAmigoNaLista();
+            while (true)
+            {
+                emprestimo.amigo = telaAmigo.EncontrarAmigoNaLista();
+
+                if (!repositorioEmprestimo.PodeFazerEmprestimo(emprestimo.amigo))
+                    ApresentarMensagemColorida("Amigo já possui emprestimo", ConsoleColor.Red);
+                else
+                    break;
+            }
+            
 
             telaRevista.ListarRevistas();
-            emprestimo.revista = telaRevista.EncontrarRevistaNaLista();
+            while (true)
+            {
+                emprestimo.revista = telaRevista.EncontrarRevistaNaLista();
+
+                if (!repositorioEmprestimo.PodeSerEmprestada(emprestimo.revista))
+                    ApresentarMensagemColorida("Revista já está sendo emprestada", ConsoleColor.Red);
+                else
+                    break;
+            }
 
             emprestimo.dataEmprestimo = DateTime.Now;
 

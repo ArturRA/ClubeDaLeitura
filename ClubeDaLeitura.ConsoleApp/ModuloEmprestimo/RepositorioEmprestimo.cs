@@ -1,4 +1,7 @@
 ﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
+using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
+using ClubeDaLeitura.ConsoleApp.ModuloRevista;
+using System.Collections;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 {
@@ -42,6 +45,60 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo
 
 
             return existeEmprestimosNaData;
+        }
+
+        public bool ExistePendencias()
+        {
+            foreach (Emprestimo e in listaRegistros)
+            {
+                if (e.pendente)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool ExisteRevistaParaEmprestar(TelaRevista telaRevista)
+        {
+            foreach (Revista r in telaRevista.SelecionarRepositorio().SelecionarTodaALista())
+            {
+                if (PodeSerEmprestada(r))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool PodeSerEmprestada(Revista revista)
+        {
+            foreach (Emprestimo e in listaRegistros)
+            {
+                if (e.revista == revista && e.pendente)
+                    return false;
+            }
+
+            return true;
+        }
+
+        internal bool ExisteAmigoParaEmprestar(TelaAmigo telaAmigo)
+        {
+            foreach (Amigo a in telaAmigo.SelecionarRepositorio().SelecionarTodaALista())
+            {
+                if (PodeFazerEmprestimo(a))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool PodeFazerEmprestimo(Amigo amigo)
+        {
+            foreach (Emprestimo e in listaRegistros)
+            {
+                if (e.amigo == amigo && e.pendente)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

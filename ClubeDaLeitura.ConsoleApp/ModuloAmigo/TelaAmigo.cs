@@ -139,7 +139,7 @@ namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo
             Console.ResetColor();
         }
 
-        public RepositorioAmigo SelecionarTodaALista()
+        public RepositorioAmigo SelecionarRepositorio()
         {
             return repositorioAmigo;
         }
